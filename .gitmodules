@@ -1,0 +1,12 @@
+[submodule "apps/api"]
+	path = apps/api
+	url = https://github.com/Matterchat/api.git
+[submodule "apps/worker"]
+	path = apps/worker
+	url = https://github.com/Matterchat/worker.git
+[submodule "apps/gateway"]
+	path = apps/gateway
+	url = https://github.com/Matterchat/gateway.git
+[submodule "packages/contracts"]
+	path = packages/contracts
+	url = https://github.com/Matterchat/contracts.git
