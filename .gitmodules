@@ -10,3 +10,6 @@
 [submodule "packages/contracts"]
 	path = packages/contracts
 	url = https://github.com/Matterchat/contracts.git
+[submodule "apps/web"]
+	path = apps/web
+	url = https://github.com/Matterchat/web.git
