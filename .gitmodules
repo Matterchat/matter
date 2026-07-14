@@ -13,3 +13,6 @@
 [submodule "apps/web"]
 	path = apps/web
 	url = https://github.com/Matterchat/web.git
+[submodule "packages/config"]
+	path = packages/config
+	url = https://github.com/Matterchat/config
