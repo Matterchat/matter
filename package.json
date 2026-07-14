@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "dotenv -- turbo run dev"
+    "dev": "dotenv -- turbo run dev",
+    "infra:up": "dotenv -- docker compose -f infra/docker/dev.compose.yaml up -d",
+    "db:migrate": "dotenv -- pnpm --filter @matterchat/database run db:migrate",
+    "db:generate": "dotenv -- turbo run db:generate"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +24,6 @@
     "dotenv-cli": "^8.0.0",
     "turbo": "^2.10.4"
   },
-
   "pnpm": {
     "ignoredBuiltDependencies": [
       "sharp",
@@ -29,4 +31,3 @@
     ]
   }
 }
-

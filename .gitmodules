@@ -16,3 +16,9 @@
 [submodule "packages/config"]
 	path = packages/config
 	url = https://github.com/Matterchat/config
+[submodule "infra/docker"]
+	path = infra/docker
+	url = https://github.com/Matterchat/docker
+[submodule "packages/database"]
+	path = packages/database
+	url = https://github.com/Matterchat/database.git
