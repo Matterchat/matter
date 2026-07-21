@@ -22,3 +22,6 @@
 [submodule "packages/database"]
 	path = packages/database
 	url = https://github.com/Matterchat/database.git
+[submodule "infra/kubernetes"]
+	path = infra/kubernetes
+	url = https://github.com/Matterchat/kubernetes.git
