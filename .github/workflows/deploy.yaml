@@ -106,7 +106,12 @@ jobs:
           # Navigate into the submodule directory to perform git operations inside its repository
           cd infra/kubernetes
 
-          # Configure git inside the submodule
+          # Unset the automatic authentication header configured by actions/checkout,
+          # which otherwise overrides our PAT credentials with the restricted runner token.
+          # -> added by AI
+          git config --local --unset http.https://github.com/.extraheader || true
+
+          # Configure Git inside the submodule
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
