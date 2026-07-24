@@ -32,20 +32,24 @@ jobs:
               - 'packages/contracts/**'
               - 'packages/config/**'
               - 'packages/database/**'
+              - '.github/workflows/deploy.yaml'
             gateway:
               - 'apps/gateway'
               - 'apps/gateway/**'
               - 'packages/contracts/**'
               - 'packages/config/**'
+              - '.github/workflows/deploy.yaml'
             web:
               - 'apps/web'
               - 'apps/web/**'
               - 'packages/contracts/**'
               - 'packages/config/**'
+              - '.github/workflows/deploy.yaml'
             db-migration:
               - 'packages/database'
               - 'packages/database/**'
               - 'packages/config/**'
+              - '.github/workflows/deploy.yaml'
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -99,28 +103,36 @@ jobs:
         run: |
           TAG="${{ steps.tag.outputs.tag }}"
 
-          # Replace old tags only for components that were built
-          if [ "${{ steps.filter.outputs.api }}" = "true" ]; then
-            sed -i "s|image: ${{ env.REGISTRY }}/matterchat/api:.*|image: ${{ env.REGISTRY }}/matterchat/api:${TAG}|g" infra/kubernetes/api.yaml
-            git add infra/kubernetes/api.yaml
-          fi
-          if [ "${{ steps.filter.outputs.gateway }}" = "true" ]; then
-            sed -i "s|image: ${{ env.REGISTRY }}/matterchat/gateway:.*|image: ${{ env.REGISTRY }}/matterchat/gateway:${TAG}|g" infra/kubernetes/gateway.yaml
-            git add infra/kubernetes/gateway.yaml
-          fi
-          if [ "${{ steps.filter.outputs.web }}" = "true" ]; then
-            sed -i "s|image: ${{ env.REGISTRY }}/matterchat/web:.*|image: ${{ env.REGISTRY }}/matterchat/web:${TAG}|g" infra/kubernetes/web.yaml
-            git add infra/kubernetes/web.yaml
-          fi
-          if [ "${{ steps.filter.outputs.db-migration }}" = "true" ]; then
-            sed -i "s|image: ${{ env.REGISTRY }}/matterchat/db-migration:.*|image: ${{ env.REGISTRY }}/matterchat/db-migration:${TAG}|g" infra/kubernetes/migration-job.yaml
-            git add infra/kubernetes/migration-job.yaml
-          fi
+          # Navigate into the submodule directory to perform git operations inside its repository
+          cd infra/kubernetes
 
+          # Configure git inside the submodule
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+          # Checkout the target branch
+          git checkout main || git checkout -b main
+
+          # Replace old tags only for components that were built
+          if [ "${{ steps.filter.outputs.api }}" = "true" ]; then
+            sed -i "s|image: ${{ env.REGISTRY }}/matterchat/api:.*|image: ${{ env.REGISTRY }}/matterchat/api:${TAG}|g" api.yaml
+            git add api.yaml
+          fi
+          if [ "${{ steps.filter.outputs.gateway }}" = "true" ]; then
+            sed -i "s|image: ${{ env.REGISTRY }}/matterchat/gateway:.*|image: ${{ env.REGISTRY }}/matterchat/gateway:${TAG}|g" gateway.yaml
+            git add gateway.yaml
+          fi
+          if [ "${{ steps.filter.outputs.web }}" = "true" ]; then
+            sed -i "s|image: ${{ env.REGISTRY }}/matterchat/web:.*|image: ${{ env.REGISTRY }}/matterchat/web:${TAG}|g" web.yaml
+            git add web.yaml
+          fi
+          if [ "${{ steps.filter.outputs.db-migration }}" = "true" ]; then
+            sed -i "s|image: ${{ env.REGISTRY }}/matterchat/db-migration:.*|image: ${{ env.REGISTRY }}/matterchat/db-migration:${TAG}|g" migration-job.yaml
+            git add migration-job.yaml
+          fi
+
+          # Commit and push directly to the kubernetes repo
           if ! git diff --staged --quiet; then
-            git commit -m "chore(gitops): update image tags to ${TAG} [skip ci]"
-            git push
+            git commit -m "chore(gitops): update image tags to ${TAG}"
+            git push origin main
           fi
