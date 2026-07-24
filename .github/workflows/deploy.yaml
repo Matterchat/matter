@@ -98,6 +98,17 @@ jobs:
           cache-from: type=gha,scope=web
           cache-to: type=gha,mode=max,scope=web
 
+      - name: Build & push DB migration job
+        if: steps.filter.outputs.db-migration == 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: packages/database/Dockerfile
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ env.REGISTRY }}/matterchat/db-migration:${{ steps.tag.outputs.tag }}, ${{ env.REGISTRY }}/matterchat/db-migration:latest
+          cache-from: type=gha,scope=db-migration
+          cache-to: type=gha,mode=max,scope=db-migration
+
       - name: Update manifests & commit
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && (steps.filter.outputs.api == 'true' || steps.filter.outputs.gateway == 'true' || steps.filter.outputs.web == 'true' || steps.filter.outputs.db-migration == 'true')
         run: |
