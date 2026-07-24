@@ -44,7 +44,7 @@ jobs:
         with:
           context: .
           file: apps/api/Dockerfile
-          push: ${{ github.event_name == "push" && github.ref == "refs/heads/main" }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ${{ env.REGISTRY }}/matterchat/api:${{ steps.tag.outputs.tag }}, ${{ env.REGISTRY}}/matterchat/api:latest
           cache-from: type=gha,scope=api
           cache-to: type=gha,mode=max,scope=api
@@ -54,7 +54,7 @@ jobs:
         with:
           context: .
           file: apps/gateway/Dockerfile
-          push: ${{ github.event_name == "push" && github.ref == "refs/heads/main" }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ${{ env.REGISTRY }}/matterchat/gateway:${{ steps.tag.outputs.tag }}, ${{ env.REGISTRY}}/matterchat/gateway:latest
           cache-from: type=gha,scope=api
           cache-to: type=gha,mode=max,scope=api
@@ -64,13 +64,13 @@ jobs:
         with:
           context: .
           file: apps/web/Dockerfile
-          push: ${{ github.event_name == "push" && github.ref == "refs/heads/main" }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ${{ env.REGISTRY }}/matterchat/web:${{ steps.tag.outputs.tag }}, ${{ env.REGISTRY}}/matterchat/web:latest
           cache-from: type=gha,scope=api
           cache-to: type=gha,mode=max,scope=api
 
       - name: Update manifests & commit
-        if: github.event_name == "push" && github.ref == "refs/heads/main"
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           TAG="${{ steps.tag.outputs.tag }}"
 
