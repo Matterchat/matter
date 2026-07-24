@@ -8,6 +8,7 @@ on:
       - "apps/web/**"
       - "packages/**"
       - "infra/kubernetes/**"
+      - ".github/workflows/deploy.yaml"
   pull_request:
     branches: [main]
 
