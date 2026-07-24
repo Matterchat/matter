@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -46,7 +48,7 @@ jobs:
           context: .
           file: apps/api/Dockerfile
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          tags: ${{ env.REGISTRY }}/matterchat/api:${{ steps.tag.outputs.tag }}, ${{ env.REGISTRY}}/matterchat/api:latest
+          tags: ${{ env.REGISTRY }}/matterchat/api:${{ steps.tag.outputs.tag }}, ${{ env.REGISTRY }}/matterchat/api:latest
           cache-from: type=gha,scope=api
           cache-to: type=gha,mode=max,scope=api
 
@@ -56,9 +58,9 @@ jobs:
           context: .
           file: apps/gateway/Dockerfile
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          tags: ${{ env.REGISTRY }}/matterchat/gateway:${{ steps.tag.outputs.tag }}, ${{ env.REGISTRY}}/matterchat/gateway:latest
-          cache-from: type=gha,scope=api
-          cache-to: type=gha,mode=max,scope=api
+          tags: ${{ env.REGISTRY }}/matterchat/gateway:${{ steps.tag.outputs.tag }}, ${{ env.REGISTRY }}/matterchat/gateway:latest
+          cache-from: type=gha,scope=gateway
+          cache-to: type=gha,mode=max,scope=gateway
 
       - name: Build & push web
         uses: docker/build-push-action@v5
@@ -66,9 +68,9 @@ jobs:
           context: .
           file: apps/web/Dockerfile
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          tags: ${{ env.REGISTRY }}/matterchat/web:${{ steps.tag.outputs.tag }}, ${{ env.REGISTRY}}/matterchat/web:latest
-          cache-from: type=gha,scope=api
-          cache-to: type=gha,mode=max,scope=api
+          tags: ${{ env.REGISTRY }}/matterchat/web:${{ steps.tag.outputs.tag }}, ${{ env.REGISTRY }}/matterchat/web:latest
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,mode=max,scope=web
 
       - name: Update manifests & commit
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
