@@ -134,5 +134,7 @@ jobs:
           # Commit and push directly to the kubernetes repo
           if ! git diff --staged --quiet; then
             git commit -m "chore(gitops): update image tags to ${TAG}"
+            # Authenticate the push by embedding the PAT token in the remote URL
+            git remote set-url origin "https://x-access-token:${{ secrets.SUBMODULE_ACCESS_TOKEN }}@github.com/Matterchat/kubernetes.git"
             git push origin main
           fi
